@@ -46,16 +46,16 @@ export function ExpenseList({
       {expenses.map((e) => (
         <div
           key={e.id}
-          className="flex items-center justify-between p-3 rounded-lg bg-card border border-border"
+          className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-card p-3 sm:flex-row sm:items-center sm:justify-between"
         >
-          <div>
-            <p className="text-sm font-medium">{e.title}</p>
-            <p className="text-xs text-muted-foreground">
+          <div className="min-w-0 break-words">
+            <p className="break-words text-sm font-medium">{e.title}</p>
+            <p className="break-words text-xs text-muted-foreground">
               {categoryLabels[e.category]} · {e.expense_date}
               {e.spent_by_name && ` · by ${e.spent_by_name}`}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-3 self-end sm:self-auto">
             {e.receipt_url && (
               <a
                 href={e.receipt_url}

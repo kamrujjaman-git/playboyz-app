@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import type { ExpenseCategory } from "@/types/expense";
 import { getTenantContext } from "@/lib/supabase/tenant";
 import { isPlatformOwner } from "@/lib/community-validation";
+import { isValidUuid } from "@/lib/utils";
 
 const MAX_RECEIPT_SIZE = 5 * 1024 * 1024;
 const RECEIPT_TYPES: Record<string, string> = {
@@ -14,6 +15,20 @@ const RECEIPT_TYPES: Record<string, string> = {
   webp: "image/webp",
   pdf: "application/pdf",
 };
+const VALID_CATEGORIES = new Set<ExpenseCategory>(["sports_equipment", "venue", "tour", "misc"]);
+
+function isValidIsoDate(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
+function receiptPath(value: string) {
+  const marker = "/storage/v1/object/public/receipts/";
+  const markerIndex = value.indexOf(marker);
+  return markerIndex >= 0 ? decodeURIComponent(value.slice(markerIndex + marker.length)) : value;
+}
 
 async function requireAdminOrTreasurer() {
   const supabase = await createClient();
@@ -48,14 +63,20 @@ export async function createExpense(formData: FormData) {
   }
 
   const title = formData.get("title") as string;
-  const category = formData.get("category") as ExpenseCategory;
-  const amount = parseFloat(formData.get("amount") as string);
-  const expenseDate = formData.get("expense_date") as string;
+  const category = String(formData.get("category") ?? "") as ExpenseCategory;
+  const amount = Number(formData.get("amount"));
+  const expenseDate = String(formData.get("expense_date") ?? "");
   const receiptEntry = formData.get("receipt");
   const receiptFile = receiptEntry instanceof File ? receiptEntry : null;
 
-  if (!title || !category || !amount || amount <= 0) {
-    throw new Error("Please fill in all required fields correctly.");
+  if (!title || !VALID_CATEGORIES.has(category)) {
+    throw new Error("Please provide a valid expense title and category.");
+  }
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error("Expense amount must be a valid number greater than zero.");
+  }
+  if (expenseDate && !isValidIsoDate(expenseDate)) {
+    throw new Error("Please provide a valid expense date.");
   }
 
   let receiptUrl: string | null = null;
@@ -93,11 +114,7 @@ export async function createExpense(formData: FormData) {
 
     uploadedReceiptName = fileName;
 
-    const { data: publicUrlData } = supabase.storage
-      .from("receipts")
-      .getPublicUrl(fileName);
-
-    receiptUrl = publicUrlData.publicUrl;
+    receiptUrl = fileName;
   }
 
   const { error } = await supabase.from("expenses").insert({
@@ -151,21 +168,46 @@ export async function deleteExpense(expenseId: string) {
   revalidatePath("/dashboard");
 }
 
+export async function getReceiptSignedUrl(expenseId: string) {
+  if (!isValidUuid(expenseId)) return null;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const tenant = await getTenantContext(supabase);
+  if (!tenant || (!tenant.isOwner && !tenant.communityId)) return null;
+
+  let expenseQuery = supabase
+    .from("expenses")
+    .select("receipt_url")
+    .eq("id", expenseId)
+  if (tenant.communityId) expenseQuery = expenseQuery.eq("community_id", tenant.communityId);
+  const { data: expense } = await expenseQuery.maybeSingle();
+  if (!expense?.receipt_url) return null;
+
+  const { data, error } = await supabase.storage
+    .from("receipts")
+    .createSignedUrl(receiptPath(expense.receipt_url), 60 * 60);
+  return error ? null : data.signedUrl;
+}
+
 export async function updateExpense(expenseId: string, formData: FormData) {
   const { supabase, tenant } = await requireAdminOrTreasurer();
   const title = String(formData.get("title") ?? "").trim();
   const category = String(formData.get("category") ?? "");
   const amount = Number(formData.get("amount"));
   const expenseDate = String(formData.get("expense_date") ?? "");
-  const validCategories = ["sports_equipment", "venue", "tour", "misc"];
 
-  if (!title || !validCategories.includes(category)) {
+  if (!title || !VALID_CATEGORIES.has(category as ExpenseCategory)) {
     throw new Error("Please provide a valid expense title and category.");
   }
   if (!Number.isFinite(amount) || amount <= 0) {
     throw new Error("Expense amount must be greater than zero.");
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(expenseDate)) {
+  if (!isValidIsoDate(expenseDate)) {
     throw new Error("Please provide a valid expense date.");
   }
 

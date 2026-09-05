@@ -5,6 +5,14 @@ import { revalidatePath } from "next/cache";
 import type { EventType, EventStatus, RsvpStatus } from "@/types/event";
 import { getTenantContext } from "@/lib/supabase/tenant";
 import { isPlatformOwner } from "@/lib/community-validation";
+import { isValidUuid } from "@/lib/utils";
+
+function isValidIsoDate(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -41,17 +49,21 @@ export async function createEvent(formData: FormData) {
   }
 
   const title = formData.get("title") as string;
-  const type = formData.get("type") as EventType;
+  const type = String(formData.get("type") ?? "") as EventType;
   const description = formData.get("description") as string;
   const eventDate = formData.get("event_date") as string;
   const venue = formData.get("venue") as string;
-  const budget = parseFloat((formData.get("budget") as string) || "0");
-  const extraContribution = parseFloat(
-    (formData.get("extra_contribution_amount") as string) || "0"
-  );
+  const budget = Number(formData.get("budget") || 0);
+  const extraContribution = Number(formData.get("extra_contribution_amount") || 0);
 
-  if (!title || !type) {
+  if (!title || !["sports", "tour"].includes(type)) {
     throw new Error("Title and type are required.");
+  }
+  if (!Number.isFinite(budget) || budget < 0 || !Number.isFinite(extraContribution) || extraContribution < 0) {
+    throw new Error("Budget values must be valid non-negative numbers.");
+  }
+  if (eventDate && !isValidIsoDate(eventDate)) {
+    throw new Error("Please provide a valid event date.");
   }
 
   const { error } = await supabase.from("events").insert({
@@ -87,6 +99,12 @@ export async function updateEvent(eventId: string, formData: FormData) {
   }
   if (!Number.isFinite(budget) || budget < 0 || !Number.isFinite(extraContribution) || extraContribution < 0) {
     throw new Error("Budget values must be valid non-negative numbers.");
+  }
+  if (eventDate && !isValidIsoDate(eventDate)) {
+    throw new Error("Please provide a valid event date.");
+  }
+  if (!isValidUuid(eventId)) {
+    throw new Error("Event was not found.");
   }
 
   let updateQuery = supabase

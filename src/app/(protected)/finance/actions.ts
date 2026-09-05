@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getTenantContext } from "@/lib/supabase/tenant";
 import { isPlatformOwner } from "@/lib/community-validation";
+import { isValidUuid } from "@/lib/utils";
 
 async function requireAdminOrTreasurer() {
   const supabase = await createClient();
@@ -54,7 +55,7 @@ export async function generateWeeklyDues() {
     const { data: appSettings } = await supabase
       .from("app_settings")
       .select("weekly_contribution_amount")
-      .eq("id", 1)
+      .eq("community_id", tenant.communityId)
       .maybeSingle();
     const weeklyAmount = Number(appSettings?.weekly_contribution_amount) || 50;
 
@@ -231,7 +232,22 @@ export async function createEventContribution(
   if (!tenant?.communityId) {
     throw new Error("Your account is not linked to a community.");
   }
+  if (!isValidUuid(eventId)) {
+    throw new Error("Event was not found.");
+  }
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error("Event contribution must be a valid number greater than zero.");
+  }
   const scope = <T,>(query: T): T => (query as { eq: (field: string, value: string) => T }).eq("community_id", tenant.communityId!);
+
+  const { data: event } = await scope(supabase
+    .from("events")
+    .select("id")
+    .eq("id", eventId)
+    .maybeSingle());
+  if (!event) {
+    throw new Error("Event was not found in your community.");
+  }
 
   const { data: activeMembers } = await scope(supabase
     .from("profiles")
@@ -242,7 +258,15 @@ export async function createEventContribution(
     return { created: 0 };
   }
 
-  const toCreate = activeMembers.map((m) => ({
+  const { data: existing, error: existingError } = await scope(supabase
+    .from("contributions")
+    .select("user_id")
+    .eq("type", "event")
+    .eq("event_id", eventId));
+  if (existingError) throw new Error("Unable to check existing event contributions.");
+  const existingUserIds = new Set((existing ?? []).map((contribution) => contribution.user_id));
+
+  const toCreate = activeMembers.filter((member) => !existingUserIds.has(member.id)).map((m) => ({
     user_id: m.id,
     type: "event" as const,
     event_id: eventId,

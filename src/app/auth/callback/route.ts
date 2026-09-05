@@ -16,10 +16,9 @@ export async function GET(request: Request) {
   const rawCommunityKey = searchParams.get("community_key") ?? "";
   const communityKey = rawCommunityKey.trim();
   const createCommunityName = searchParams.get("create_community_name")?.trim();
-  const loginRedirect = (error: string, detail?: string) => {
+  const loginRedirect = (error: string) => {
     const params = new URLSearchParams({ tab, error });
     if (communityKey) params.set("community_key", communityKey);
-    if (detail) params.set("error_detail", detail);
     return NextResponse.redirect(`${origin}/login?${params.toString()}`);
   };
 
@@ -195,12 +194,12 @@ export async function GET(request: Request) {
             hint: communityError?.hint,
           });
           await supabase.auth.signOut();
-          return loginRedirect("db_error", message);
+          return loginRedirect("db_error");
         }
         communityId = createdCommunity.id;
       } else if (tab === "create") {
         await supabase.auth.signOut();
-        return loginRedirect("db_error", "Community name is required.");
+        return loginRedirect("db_error");
       }
 
       if (existingProfile && ownerBypass && existingProfile.role !== "super_admin") {
@@ -252,7 +251,7 @@ export async function GET(request: Request) {
             hint: profileInsertError.hint,
           });
           await supabase.auth.signOut();
-          return loginRedirect("db_error", profileInsertError.message);
+          return loginRedirect("db_error");
         }
       }
 

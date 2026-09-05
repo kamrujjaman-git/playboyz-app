@@ -4,6 +4,7 @@ import { GenerateWeeklyDuesButton } from "@/components/finance/generate-dues-but
 import { ContributionRow } from "@/components/finance/contribution-row";
 import { AddExpenseForm } from "@/components/finance/add-expense-form";
 import { ExpenseList } from "@/components/finance/expense-list";
+import { getReceiptSignedUrl } from "@/app/(protected)/finance/expense-actions";
 import type { Contribution } from "@/types/contribution";
 import type { Expense } from "@/types/expense";
 import { getTenantContext } from "@/lib/supabase/tenant";
@@ -66,10 +67,11 @@ export default async function FinancePage() {
     })
   );
 
-  const allExpenses: Expense[] = (rawExpenses ?? []).map((e) => ({
+  const allExpenses: Expense[] = await Promise.all((rawExpenses ?? []).map(async (e) => ({
     ...e,
+    receipt_url: e.receipt_url ? await getReceiptSignedUrl(e.id) : null,
     spent_by_name: e.spent_by ? profilesMap[e.spent_by] : undefined,
-  }));
+  })));
 
   const totalCollected = allContributions
     .filter((c) => c.status === "paid")

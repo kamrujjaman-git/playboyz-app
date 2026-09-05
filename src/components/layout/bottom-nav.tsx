@@ -21,7 +21,7 @@ const navItems = [
   { href: "/members", label: "Members", icon: Users },
   { href: "/finance", label: "Finance", icon: Wallet },
   { href: "/events", label: "Events", icon: CalendarDays },
-  { href: "/announcements", label: "Announcements", icon: Megaphone },
+  { href: "/announcements", label: "Announcements", mobileLabel: "News", icon: Megaphone },
 ];
 
 export function BottomNav({ userEmail, isOwner }: { userEmail: string; isOwner: boolean }) {
@@ -49,7 +49,8 @@ export function BottomNav({ userEmail, isOwner }: { userEmail: string; isOwner: 
                   className={`block max-w-full truncate whitespace-nowrap text-[10px] font-semibold ${isActive ? "text-primary" : "text-muted-foreground"
                     }`}
                 >
-                  {item.label}
+                  <span className="sm:hidden">{item.mobileLabel ?? item.label}</span>
+                  <span className="hidden sm:inline">{item.label}</span>
                 </span>
               </Link>
             );
