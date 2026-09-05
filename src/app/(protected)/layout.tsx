@@ -112,7 +112,7 @@ export default async function ProtectedLayout({
         />
         <main className="min-w-0 p-4 pb-24 md:p-8 md:pb-8">{children}</main>
       </div>
-      <BottomNav />
+      <BottomNav userEmail={user.email ?? ""} isOwner={owner} />
     </div>
   );
 }

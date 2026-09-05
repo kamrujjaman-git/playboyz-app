@@ -56,19 +56,19 @@ export default async function AnnouncementsPage() {
   }));
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">Announcements</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+    <div className="min-w-0 space-y-6 pb-24">
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="break-words text-2xl font-bold">Announcements</h1>
+          <p className="mt-1 break-words text-sm text-muted-foreground">
             Notices and updates for everyone.
           </p>
         </div>
-        {canManage && <AddAnnouncementForm />}
+        {canManage && <div className="w-full shrink-0 sm:w-auto"><AddAnnouncementForm /></div>}
       </div>
 
       {announcements.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="break-words text-sm text-muted-foreground">
           No announcements yet.
         </p>
       ) : (

@@ -29,25 +29,25 @@ export function AnnouncementCard({
   });
 
   return (
-    <div className="p-4 rounded-xl bg-card border border-border">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
+    <div className="min-w-0 rounded-xl border border-border bg-card p-4">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
           <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
             <Megaphone size={16} className="text-primary" />
           </div>
-          <div>
-            <h3 className="text-sm font-semibold">{announcement.title}</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+          <div className="min-w-0 break-words">
+            <h3 className="break-words text-sm font-semibold">{announcement.title}</h3>
+            <p className="mt-1 break-words text-sm text-muted-foreground">
               {announcement.body}
             </p>
-            <p className="text-[11px] text-muted-foreground mt-2">
+            <p className="mt-2 break-words text-[11px] text-muted-foreground">
               {announcement.author_name && `${announcement.author_name} · `}
               {date}
             </p>
           </div>
         </div>
         {canManage && (
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex shrink-0 items-center gap-2 self-end sm:self-start">
             <EditAnnouncementForm announcement={announcement} />
             <button
               onClick={handleDelete}

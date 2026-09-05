@@ -27,7 +27,7 @@ export function AddAnnouncementForm() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
       >
         <Plus size={14} />
         New Announcement
@@ -36,12 +36,12 @@ export function AddAnnouncementForm() {
   }
 
   return (
-    <div className="p-4 rounded-xl bg-card border border-border mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold">Post Announcement</h3>
+    <div className="w-full min-w-0 rounded-xl border border-border bg-card p-4">
+      <div className="mb-4 flex min-w-0 items-start justify-between gap-3">
+        <h3 className="min-w-0 break-words text-sm font-semibold">Post Announcement</h3>
         <button
           onClick={() => setOpen(false)}
-          className="text-muted-foreground hover:text-foreground"
+          className="min-h-11 min-w-11 shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
         >
           <X size={16} />
         </button>
@@ -56,7 +56,7 @@ export function AddAnnouncementForm() {
             name="title"
             required
             placeholder="e.g. Practice moved to Saturday"
-            className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="min-h-11 w-full min-w-0 rounded-lg border border-border bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
         <div>
@@ -68,7 +68,7 @@ export function AddAnnouncementForm() {
             required
             rows={3}
             placeholder="Details for everyone..."
-            className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+            className="min-h-24 w-full min-w-0 resize-none rounded-lg border border-border bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
 
