@@ -51,13 +51,13 @@ export function Dropdown({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border border-border bg-secondary px-3 py-2 text-left text-sm text-foreground transition-colors hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring"
+        className="flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border border-transparent bg-secondary px-3 py-2 text-left text-sm text-foreground shadow-[var(--shadow-inset)] transition-all hover:-translate-y-px hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-ring active:shadow-[var(--shadow-soft-sm)]"
       >
         <span>{selected?.label ?? "Select an option"}</span>
         <ChevronDown size={16} className={`text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} aria-hidden="true" />
       </button>
       {open && (
-        <div role="listbox" className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-border bg-card p-1 shadow-xl shadow-black/20">
+        <div role="listbox" className="absolute z-[100] mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-xl dark:border-slate-700 dark:bg-slate-800 dark:shadow-2xl">
           {options.map((option) => (
             <button
               key={option.value}

@@ -3,6 +3,7 @@
 import { useState, useRef, useTransition } from "react";
 import { createExpense } from "@/app/(protected)/finance/expense-actions";
 import { Dropdown } from "@/components/ui/dropdown";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Plus, X, Paperclip } from "lucide-react";
 
 const categories = [
@@ -92,12 +93,7 @@ export function AddExpenseForm() {
             <label className="text-xs text-muted-foreground block mb-1">
               Date
             </label>
-            <input
-              name="expense_date"
-              type="date"
-              defaultValue={new Date().toISOString().split("T")[0]}
-              className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            <DatePicker name="expense_date" defaultValue={new Date().toISOString().split("T")[0]} aria-label="Expense date" />
           </div>
         </div>
 

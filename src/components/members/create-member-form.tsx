@@ -39,7 +39,7 @@ export function CreateMemberForm({ requesterRole }: { requesterRole: UserRole })
 
             {open && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+                    className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 sm:items-center"
                     role="presentation"
                     onMouseDown={(event) => {
                         if (event.target === event.currentTarget) setOpen(false);
@@ -49,7 +49,7 @@ export function CreateMemberForm({ requesterRole }: { requesterRole: UserRole })
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="create-member-title"
-                        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-2xl"
+                        className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-x-hidden overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-2xl"
                     >
                         <div className="mb-5 flex items-center justify-between">
                             <h2 id="create-member-title" className="text-lg font-semibold">

@@ -19,7 +19,7 @@ export function ThemeToggle() {
     );
 
     if (!mounted) {
-        return <div className="h-9 w-9 rounded-lg border border-border bg-secondary" aria-hidden="true" />;
+        return <div className="h-9 w-9 rounded-lg border border-transparent bg-secondary shadow-[var(--shadow-soft-sm)]" aria-hidden="true" />;
     }
 
     const current = themes.find((item) => item.value === theme) ?? themes[2];
@@ -32,7 +32,7 @@ export function ThemeToggle() {
                 aria-label={`Theme: ${current.label}`}
                 title={`Theme: ${current.label}`}
                 onClick={() => setTheme(themes[(themes.findIndex((item) => item.value === theme) + 1) % themes.length].value)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-secondary text-muted-foreground transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-ring"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent bg-secondary text-muted-foreground shadow-[var(--shadow-soft-sm)] transition-all hover:-translate-y-px hover:text-primary focus:outline-none focus:ring-2 focus:ring-ring active:shadow-[var(--shadow-inset)]"
             >
                 <Icon size={17} aria-hidden="true" />
             </button>

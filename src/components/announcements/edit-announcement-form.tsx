@@ -28,8 +28,8 @@ export function EditAnnouncementForm({ announcement }: { announcement: Announcem
                 <Pencil size={14} aria-hidden="true" />
             </button>
             {open && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-                    <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 sm:items-center">
+                    <div className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-x-hidden overflow-y-auto rounded-2xl border border-border bg-card p-6">
                         <div className="mb-5 flex items-center justify-between">
                             <h2 className="text-lg font-semibold">Edit Announcement</h2>
                             <button type="button" onClick={() => setOpen(false)} aria-label="Close edit announcement"><X size={18} /></button>

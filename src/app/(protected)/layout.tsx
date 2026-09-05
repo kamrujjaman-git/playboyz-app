@@ -101,7 +101,7 @@ export default async function ProtectedLayout({
         communityName={communityName}
         communityLogo={communityLogo}
       />
-      <div className="md:pl-64">
+      <div className="min-w-0 md:pl-64">
         <Header
           userName={resolvedProfile.full_name || "Member"}
           userEmail={user.email ?? ""}
@@ -110,7 +110,7 @@ export default async function ProtectedLayout({
           communityName={communityName}
           communityLogo={communityLogo}
         />
-        <main className="p-4 md:p-8 pb-24 md:pb-8">{children}</main>
+        <main className="min-w-0 p-4 pb-24 md:p-8 md:pb-8">{children}</main>
       </div>
       <BottomNav />
     </div>

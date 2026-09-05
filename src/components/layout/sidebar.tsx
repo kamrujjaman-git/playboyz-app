@@ -41,8 +41,8 @@ export function Sidebar({
     : navItems;
 
   return (
-    <aside className="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 border-r border-border bg-card">
-      <div className="flex items-center gap-2.5 px-6 h-16 border-b border-border">
+    <aside className="glass-surface hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col rounded-none border-y-0 border-l-0">
+      <div className="flex h-16 items-center gap-2.5 border-b border-border px-6">
         <img
           src={communityLogo}
           alt={`${communityName} logo`}
@@ -71,7 +71,7 @@ export function Sidebar({
               {isActive && (
                 <motion.div
                   layoutId="sidebar-active"
-                  className="absolute inset-0 bg-primary/10 border border-primary/30 rounded-lg"
+                  className="absolute inset-0 rounded-lg border border-primary/30 bg-primary/10 shadow-[var(--shadow-inset)]"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                 />
               )}

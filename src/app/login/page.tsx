@@ -50,11 +50,9 @@ function LoginContent() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10">
-      <div className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 bottom-1/4 h-80 w-80 rounded-full bg-blue-400/10 blur-3xl" />
-      <div className="absolute right-5 top-5"><ThemeToggle /></div>
-      <div className="relative flex w-full max-w-md flex-col items-center gap-5 rounded-3xl border border-white/10 bg-card/75 p-8 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-10">
+    <div className="relative flex min-h-dvh w-full items-center justify-center overflow-x-hidden overflow-y-auto bg-background px-4 py-16 sm:px-6 sm:py-10">
+      <div className="absolute right-4 top-4 sm:right-6 sm:top-6"><ThemeToggle /></div>
+      <div className="relative flex w-full min-w-0 max-w-md shrink-0 flex-col items-center gap-5 rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] sm:p-10">
         <Image
           src="/logo.png"
           alt="Campusphere logo"
@@ -65,15 +63,15 @@ function LoginContent() {
         />
         <h1 className="text-3xl font-black tracking-tight text-primary">Campusphere</h1>
         <p className="text-sm text-muted-foreground">Access your Campusphere community</p>
-        <div className="grid w-full grid-cols-3 rounded-xl border border-border bg-secondary p-1">
+        <div className="grid min-h-12 w-full min-w-0 grid-cols-3 rounded-xl border border-border bg-secondary p-1">
           {[["signin", "Sign In"], ["join", "Join Community"], ["create", "Create Community"]].map(([value, label]) => (
-            <button key={value} type="button" onClick={() => changeMode(value as typeof mode)} className={`rounded-lg px-2 py-2 text-xs font-semibold transition-colors ${mode === value ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+            <button key={value} type="button" onClick={() => changeMode(value as typeof mode)} className={`min-h-10 min-w-0 shrink-0 rounded-lg px-1 py-2 text-center text-[11px] font-semibold leading-tight transition-colors sm:px-2 sm:text-xs ${mode === value ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
               {label}
             </button>
           ))}
         </div>
         {errorCode && (
-          <div role="alert" className="w-full rounded-xl border-2 border-destructive bg-destructive/15 px-4 py-3 text-center text-sm font-semibold text-destructive">
+          <div role="alert" className="flex min-h-16 w-full shrink-0 items-center justify-center rounded-xl border border-destructive bg-destructive/10 px-4 py-3 text-center text-sm font-semibold text-destructive">
             {errorCode === "invalid_domain"
               ? "Sign-in blocked: only official university emails ending in .edu or .edu.bd are permitted."
               : errorCode === "unregistered_user"
@@ -93,21 +91,21 @@ function LoginContent() {
                             : "Authentication failed. Please try again."}
           </div>
         )}
-        <div className="w-full space-y-3">
+        <div className="flex min-h-12 w-full min-w-0 shrink-0 flex-col justify-center gap-3">
           {mode === "join" && (
-            <input value={communityKey} onChange={(event) => setCommunityKey(event.target.value)} placeholder="Community Key" className="w-full rounded-xl border border-border bg-secondary px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
+            <input value={communityKey} onChange={(event) => setCommunityKey(event.target.value)} placeholder="Community Key" className="min-h-12 w-full min-w-0 shrink-0 rounded-xl border border-border bg-secondary px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
           )}
           {mode === "create" && (
-            <input value={communityName} onChange={(event) => setCommunityName(event.target.value)} placeholder="Community name" className="w-full rounded-xl border border-border bg-secondary px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
+            <input value={communityName} onChange={(event) => setCommunityName(event.target.value)} placeholder="Community name" className="min-h-12 w-full min-w-0 shrink-0 rounded-xl border border-border bg-secondary px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
           )}
         </div>
-        <p className="w-full rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-center text-xs leading-5 text-muted-foreground">
+        <p className="flex min-h-16 w-full shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-center text-xs leading-5 text-muted-foreground">
           Only official university emails (.edu / .edu.bd) are permitted. Personal Gmail accounts will be rejected.
         </p>
         <button
           onClick={handleGoogleLogin}
           disabled={(mode === "join" && !communityKey.trim()) || (mode === "create" && !communityName.trim())}
-          className="w-full rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/10 transition-transform hover:-translate-y-0.5 hover:opacity-90"
+          className="min-h-12 w-full shrink-0 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-[var(--shadow-soft-sm)] transition-transform hover:-translate-y-0.5 hover:opacity-90 active:translate-y-px active:shadow-[var(--shadow-inset)]"
         >
           Continue with Google
         </button>

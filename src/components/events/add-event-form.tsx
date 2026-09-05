@@ -3,6 +3,7 @@
 import { useState, useRef, useTransition } from "react";
 import { createEvent } from "@/app/(protected)/events/event-actions";
 import { Dropdown } from "@/components/ui/dropdown";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Plus, X } from "lucide-react";
 
 export function AddEventForm() {
@@ -77,11 +78,7 @@ export function AddEventForm() {
             <label className="text-xs text-muted-foreground block mb-1">
               Date
             </label>
-            <input
-              name="event_date"
-              type="date"
-              className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            <DatePicker name="event_date" aria-label="Event date" />
           </div>
 
           <div>
